@@ -7,6 +7,15 @@ const Button = ({handleClick, text}) => {
         </button>
     )
 }
+
+const StatisticLine = ({text, value, sufix}) => {
+    return (
+        <div>
+            {text} {value} {sufix}
+            <br/>
+        </div>
+    )
+}
 const Statistics = (params) => {
     const [good, neutral, bad, totalScore] = params.feedback
     let total = good + neutral + bad
@@ -21,17 +30,12 @@ const Statistics = (params) => {
 
     return (
         <div>
-            good {good}
-            <br/>
-            neutral {neutral}
-            <br/>
-            bad {bad}
-            <br/>
-            all {total}
-            <br/>
-            average {total !== 0? totalScore/total: 0}
-            <br/>
-            positive {total !== 0? good/total*100: 0} %
+            <StatisticLine text='good' value={good}/>
+            <StatisticLine text='neutral' value={neutral}/>
+            <StatisticLine text='bad' value={bad}/>
+            <StatisticLine text='all' value={total}/>
+            <StatisticLine text='average' value={total !== 0? totalScore/total: 0}/>
+            <StatisticLine text='positive' value={total !== 0? good/total*100: 0} sufix='%'/>
         </div>
     )
 }
