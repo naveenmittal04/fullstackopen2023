@@ -13,8 +13,11 @@ const Part = ({part}) => {
 }
 
 function Total({parts}) {
-    let total = 0;
-    parts.forEach(part => total += part.exercises);
+    let total = parts.reduce((sum, part) => {
+        //console.log("sum ", sum,"part", part)
+        return sum + part.exercises
+    }, 0);
+   // console.log('Total ', total)
     return (
         <p><b>total of {total} exercises</b></p>
     )
