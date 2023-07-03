@@ -10,10 +10,14 @@ const Button = ({handleClick, text}) => {
 
 const StatisticLine = ({text, value, sufix}) => {
     return (
-        <div>
-            {text} {value} {sufix}
-            <br/>
-        </div>
+        <tr>
+            <td>
+                {text}
+            </td>
+            <td>
+                {value} {sufix}
+            </td>
+        </tr>
     )
 }
 const Statistics = (params) => {
@@ -30,12 +34,16 @@ const Statistics = (params) => {
 
     return (
         <div>
-            <StatisticLine text='good' value={good}/>
-            <StatisticLine text='neutral' value={neutral}/>
-            <StatisticLine text='bad' value={bad}/>
-            <StatisticLine text='all' value={total}/>
-            <StatisticLine text='average' value={total !== 0? totalScore/total: 0}/>
-            <StatisticLine text='positive' value={total !== 0? good/total*100: 0} sufix='%'/>
+            <table>
+                <tbody>
+                    <StatisticLine text='good' value={good}/>
+                    <StatisticLine text='neutral' value={neutral}/>
+                    <StatisticLine text='bad' value={bad}/>
+                    <StatisticLine text='all' value={total}/>
+                    <StatisticLine text='average' value={total !== 0? totalScore/total: 0}/>
+                    <StatisticLine text='positive' value={total !== 0? good/total*100: 0} sufix='%'/>
+                </tbody>
+            </table>
         </div>
     )
 }
