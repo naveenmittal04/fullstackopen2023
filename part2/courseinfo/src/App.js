@@ -12,11 +12,20 @@ const Part = ({part}) => {
     )
 }
 
+function Total({parts}) {
+    let total = 0;
+    parts.forEach(part => total += part.exercises);
+    return (
+        <p><b>total of {total} exercises</b></p>
+    )
+}
+
 function Content({parts}) {
     console.log('Content ', parts)
     return (
         <div>
             {parts.map(part => <Part key={part.id} part={part} />)}
+            <Total parts={parts} />
         </div>
     )
 }
@@ -50,6 +59,11 @@ const App = () => {
                 name: 'State of a component',
                 exercises: 14,
                 id: 3
+            },
+            {
+                name: 'Redux',
+                exercises: 11,
+                id: 4
             }
         ]
     }
