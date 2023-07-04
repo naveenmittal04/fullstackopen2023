@@ -16,6 +16,12 @@ const App = () => {
 
     const handleFormOnSubmit = (event) => {
         event.preventDefault()
+        for(let i = 0; i < persons.length; i++) {
+            if(persons[i].name === newName) {
+                alert(`${newName} is already added to phonebook`)
+                return
+            }
+        }
         const inputPerson = {
             id: (persons[persons.length-1].id + 1),
             name: newName,
