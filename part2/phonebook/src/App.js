@@ -37,6 +37,11 @@ const App = () => {
         setPersons(copy)
         setNewName('')
         setNewNumber('')
+
+        if(newName.toLowerCase().includes(filterName.toLowerCase())) {
+            const copy = filterPersons.concat(inputPerson)
+            setFilterPersons(copy)
+        }
     };
     const handleFilterNameOnChange = (event) => {
         console.log(event.target)
@@ -52,27 +57,53 @@ const App = () => {
     return (
       <div>
         <h2>Phonebook</h2>
-          <form >
-              <div>
-                  filter shown with <input value={filterName} onChange={handleFilterNameOnChange}/>
-              </div>
-          </form>
-          <h2>add a new</h2>
-        <form onSubmit={handleFormOnSubmit}>
-          <div>
-            name: <input value={newName} onChange={handleNewNameOnChange}/>
-          </div>
-            <div>
-                number: <input value={newNumber} onChange={handleNewNumberOnChange}/>
-            </div>
-          <div>
-            <button type="submit">add</button>
-          </div>
-        </form>
+        <Filter filterName={filterName} handleFilterNameOnChange={handleFilterNameOnChange}/>
+          <h2>Add a new</h2>
+        <PersonForm handleFormOnSubmit={handleFormOnSubmit} newName={newName} handleNewNameOnChange={handleNewNameOnChange} newNumber={newNumber} handleNewNumberOnChange={handleNewNumberOnChange}/>
         <h2>Numbers</h2>
-          {filterPersons.map(person => <div key={person.id}>{person.name} {person.number}</div>)}
+          <Persons persons={filterPersons}/>
       </div>
   )
 }
 
+const Filter = ({filterName, handleFilterNameOnChange}) => {
+    return (
+        <form >
+            <div>
+                filter shown with <input value={filterName} onChange={handleFilterNameOnChange}/>
+            </div>
+        </form>
+    )
+}
+
+const PersonForm = ({newName, handleNewNameOnChange, newNumber, handleNewNumberOnChange, handleFormOnSubmit}) => {
+    return (
+        <form onSubmit={handleFormOnSubmit}>
+            <div>
+                name: <input value={newName} onChange={handleNewNameOnChange}/>
+            </div>
+            <div>
+                number: <input value={newNumber} onChange={handleNewNumberOnChange}/>
+            </div>
+            <div>
+                <button type="submit">add</button>
+            </div>
+        </form>
+    )
+}
+
+const Person = ({person}) => {
+    return (
+        <div>
+            {person.name} {person.number}
+        </div>
+    )
+}
+const Persons = ({persons}) => {
+    return (
+        <div>
+            {persons.map(person => <Person key={person.id} person={person} />)}
+        </div>
+    )
+}
 export default App
