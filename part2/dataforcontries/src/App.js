@@ -74,9 +74,10 @@ const Country = ({country}) => {
     }
     console.log(country.flags)
     let weather = null
+    const api_key = process.env.REACT_APP_API_KEY
     useEffect( () => {
             axios
-                .get("https://api.openweathermap.org/data/2.5/weather?lat=" + country.latlng[0] + "&lon=" + country.latlng[1] + "&appid=68357faf71a817b30961e893ace67a97")
+                .get("https://api.openweathermap.org/data/2.5/weather?lat=" + country.latlng[0] + "&lon=" + country.latlng[1] + "&appid="+api_key)
                 .then(response => {
                     console.log(response)
                     weather = response.data
