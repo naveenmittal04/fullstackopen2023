@@ -1,5 +1,6 @@
 import countryService from './services/countries'
 import {useState, useEffect} from 'react'
+import axios from "axios";
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
     )
 
     const show = (name) => {
+        console.log("show " + name)
         setState("single")
         setCountry(countries.find(country => country.name.common === name))
     }
@@ -60,13 +62,33 @@ function App() {
         </div>
     );
 }
+
+
 const Country = ({country}) => {
+    const [iconUrl, setIconUrl] = useState()
+    const [temp, setTemp] = useState(0)
     const keys = Object.keys(country.languages)
     let languages = []
     for(let i = 0; i < keys.length; i++) {
         languages.push({id:i, lan: country.languages[keys[i]]})
     }
     console.log(country.flags)
+    let weather = null
+    useEffect( () => {
+            axios
+                .get("https://api.openweathermap.org/data/2.5/weather?lat=" + country.latlng[0] + "&lon=" + country.latlng[1] + "&appid=68357faf71a817b30961e893ace67a97")
+                .then(response => {
+                    console.log(response)
+                    weather = response.data
+                    setTemp(weather.main.temp)
+                    console.log("temp " + weather.main.temp)
+                    let code = weather.weather[0].icon
+                    console.log("code " + code)
+                    setIconUrl("https://openweathermap.org/img/wn/" + code + "@2x.png")
+                    console.log("iconUrl " + iconUrl + code + "@2x.png")
+                })
+        }, []
+    )
     return (
         <div>
             <h1>{country.name.common}</h1>
@@ -80,13 +102,17 @@ const Country = ({country}) => {
                 }
             </ul>
             <img src={country.flags.png} alt={"flag"}/>
+            <h2>Weather of {country.name.common}</h2>
+            temperature {temp-273.15} Celsius
+            <br/>
+            {iconUrl === null ? <img src={iconUrl} alt={"weather icon"}/>: null}
         </div>
     )
 }
 
-const Name = ({name, show}) => {
+const Name = ({ name, show}) => {
     return (
-        <div >
+        <div>
             {name} <button onClick={() => show(name)}>show</button>
         </div>
     )
@@ -94,7 +120,7 @@ const Name = ({name, show}) => {
 const Countries = ({names, show}) => {
     return (
         <div>
-            {names.map(name => <Name name={name} show={show}/>)}
+            {names.map((name,id) => <Name key={id} name={name} show={show}/>)}
         </div>
     )
 }
