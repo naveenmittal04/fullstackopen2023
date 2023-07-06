@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from "axios";
+import personService from './services/persons'
 const App = () => {
     const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
@@ -9,12 +10,12 @@ const App = () => {
 
     useEffect(() => {
         console.log('effect')
-        axios
-            .get('http://localhost:3001/persons')
-            .then(response => {
+        personService
+            .getAll()
+            .then(responsePersons => {
                 console.log('promise fulfilled')
-                setPersons(response.data)
-                setFilterPersons(response.data)
+                setPersons(responsePersons)
+                setFilterPersons(responsePersons)
             })
     }, [])
     const handleNewNameOnChange = (event) => {
@@ -40,17 +41,17 @@ const App = () => {
             number: newNumber
         }
 
-        axios
-            .post('http://localhost:3001/persons', inputPerson)
-            .then(response => {
+        personService
+            .create(inputPerson)
+            .then(responsePerson => {
                 console.log('new note added to server')
-                const copy = persons.concat(response.data)
+                const copy = persons.concat(responsePerson)
                 setPersons(copy)
                 setNewName('')
                 setNewNumber('')
 
                 if(newName.toLowerCase().includes(filterName.toLowerCase())) {
-                    const copy = filterPersons.concat(response.data)
+                    const copy = filterPersons.concat(responsePerson)
                     setFilterPersons(copy)
                 }
             })
