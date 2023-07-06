@@ -6,7 +6,14 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
     const [filterName, setFilterName] = useState('')
     const [filterPersons, setFilterPersons] = useState(persons)
+    const [message, setMessage] = useState("")
 
+    const setNotifocation = (message) => {
+        setMessage(message)
+        setTimeout(()=>{
+            setMessage(null)
+        }, 5000)
+    }
     const remove = (name, id) => {
         if(window.confirm(`Do you want to delete ${name} ?`)) {
             personService
@@ -14,6 +21,7 @@ const App = () => {
                 .then(response => {
                     setPersons(persons.filter(n => n.id !== id))
                     setFilterPersons(filterPersons.filter(n => n.id !== id))
+                    setNotifocation(`${name} Deleted.`)
                 })
         }
     }
@@ -47,6 +55,9 @@ const App = () => {
             .then(response => {
                 setPersons(persons.map(n => (n.id !== person.id) ? n:inputPerson))
                 setFilterPersons(filterPersons.map(n => (n.id !== person.id) ? n:inputPerson))
+                setNotifocation(`${person.name} Updated.`)
+                setNewName('')
+                setNewNumber('')
             })
     }
 
@@ -70,6 +81,7 @@ const App = () => {
             .create(inputPerson)
             .then(responsePerson => {
                 console.log('new note added to server')
+                setNotifocation(`${responsePerson.name} Added.`)
                 const copy = persons.concat(responsePerson)
                 setPersons(copy)
                 setNewName('')
@@ -97,6 +109,7 @@ const App = () => {
     };
     return (
         <div>
+            <Notification message={message} setMessage={setMessage} />
             <h2>Phonebook</h2>
             <Filter filterName={filterName} handleFilterNameOnChange={handleFilterNameOnChange}/>
             <h2>Add a new</h2>
@@ -107,6 +120,24 @@ const App = () => {
     )
 }
 
+const Notification = ({message}) => {
+    const notificationStyle = {
+        color: "green",
+        background: "lightgray",
+        borderStyle: "solid",
+        borderRadius: 5,
+        padding: 10,
+        fontSize: 20
+    }
+    if(message === null){
+        return null;
+    }
+    return (
+        <div style={notificationStyle}>
+            {message}
+        </div>
+    )
+}
 const Filter = ({filterName, handleFilterNameOnChange}) => {
     return (
         <form >
