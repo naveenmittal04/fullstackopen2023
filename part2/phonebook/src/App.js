@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from "axios";
 import personService from './services/persons'
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -7,6 +6,17 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
     const [filterName, setFilterName] = useState('')
     const [filterPersons, setFilterPersons] = useState(persons)
+
+    const remove = (name, id) => {
+        if(window.confirm(`Do you want to delete ${name} ?`)) {
+            personService
+                .remove(id)
+                .then(response => {
+                    setPersons(persons.filter(n => n.id !== id))
+                    setFilterPersons(filterPersons.filter(n => n.id !== id))
+                })
+        }
+    }
 
     useEffect(() => {
         console.log('effect')
@@ -58,6 +68,7 @@ const App = () => {
 
 
     };
+
     const handleFilterNameOnChange = (event) => {
         console.log(event.target)
         setFilterName(event.target.value)
@@ -76,7 +87,7 @@ const App = () => {
             <h2>Add a new</h2>
             <PersonForm handleFormOnSubmit={handleFormOnSubmit} newName={newName} handleNewNameOnChange={handleNewNameOnChange} newNumber={newNumber} handleNewNumberOnChange={handleNewNumberOnChange}/>
             <h2>Numbers</h2>
-            <Persons persons={filterPersons}/>
+            <Persons persons={filterPersons} remove={remove}/>
         </div>
     )
 }
@@ -107,17 +118,18 @@ const PersonForm = ({newName, handleNewNameOnChange, newNumber, handleNewNumberO
     )
 }
 
-const Person = ({person}) => {
+const Person = ({person, remove}) => {
     return (
         <div>
             {person.name} {person.number}
+            <button onClick={() => remove(person.name, person.id)}>delete</button>
         </div>
     )
 }
-const Persons = ({persons}) => {
+const Persons = ({persons, remove}) => {
     return (
         <div>
-            {persons.map(person => <Person key={person.id} person={person} />)}
+            {persons.map(person => <Person key={person.id} person={person} remove={remove} />)}
         </div>
     )
 }
