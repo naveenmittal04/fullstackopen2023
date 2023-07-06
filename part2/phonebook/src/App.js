@@ -6,9 +6,15 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
     const [filterName, setFilterName] = useState('')
     const [filterPersons, setFilterPersons] = useState(persons)
-    const [message, setMessage] = useState("")
+    const [message, setMessage] = useState(null)
+    const [color, setColor] = useState("")
 
-    const setNotifocation = (message) => {
+    const setNotifocation = (message, isError) => {
+        if(isError){
+            setColor("red")
+        } else {
+            setColor("green")
+        }
         setMessage(message)
         setTimeout(()=>{
             setMessage(null)
@@ -18,10 +24,18 @@ const App = () => {
         if(window.confirm(`Do you want to delete ${name} ?`)) {
             personService
                 .remove(id)
-                .then(response => {
+                .then(() => {
                     setPersons(persons.filter(n => n.id !== id))
                     setFilterPersons(filterPersons.filter(n => n.id !== id))
-                    setNotifocation(`${name} Deleted.`)
+                    setNotifocation(`${name} Deleted.`, false)
+                })
+                .catch(response => {
+                    console.log(response)
+                    if(response.response.status === 404) {
+                        setPersons(persons.filter(n => n.id !== id))
+                        setFilterPersons(filterPersons.filter(n => n.id !== id))
+                        setNotifocation(`${name} Already Deleted`, true)
+                    }
                 })
         }
     }
@@ -52,7 +66,7 @@ const App = () => {
         }
         personService
             .update(person.id, inputPerson)
-            .then(response => {
+            .then(() => {
                 setPersons(persons.map(n => (n.id !== person.id) ? n:inputPerson))
                 setFilterPersons(filterPersons.map(n => (n.id !== person.id) ? n:inputPerson))
                 setNotifocation(`${person.name} Updated.`)
@@ -109,7 +123,7 @@ const App = () => {
     };
     return (
         <div>
-            <Notification message={message} setMessage={setMessage} />
+            <Notification message={message} setMessage={setMessage} color={color}/>
             <h2>Phonebook</h2>
             <Filter filterName={filterName} handleFilterNameOnChange={handleFilterNameOnChange}/>
             <h2>Add a new</h2>
@@ -120,9 +134,9 @@ const App = () => {
     )
 }
 
-const Notification = ({message}) => {
+const Notification = ({message, setMessage, color}) => {
     const notificationStyle = {
-        color: "green",
+        color: color,
         background: "lightgray",
         borderStyle: "solid",
         borderRadius: 5,
@@ -132,6 +146,9 @@ const Notification = ({message}) => {
     if(message === null){
         return null;
     }
+    setTimeout(()=>{
+        setMessage(null)
+    }, 5000)
     return (
         <div style={notificationStyle}>
             {message}
