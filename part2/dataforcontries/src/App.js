@@ -29,6 +29,11 @@ function App() {
                 })
         }, []
     )
+
+    const show = (name) => {
+        setState("single")
+        setCountry(countries.find(country => country.name.common === name))
+    }
     const handleOnChange = (event) => {
         console.log(event.target)
         setValue(event.target.value)
@@ -50,7 +55,7 @@ function App() {
                 <input value={value} onChange={handleOnChange}/>
             </form>
             {state.includes("too_many") ? <p>Too many matches, specify another filter </p>: null}
-            {state.includes("some") ? <Countries names={display} />: null}
+            {state.includes("some") ? <Countries names={display} show={(name)=>show(name)}/>: null}
             {state.includes("single") ? <Country country={country} />:null}
         </div>
     );
@@ -79,10 +84,17 @@ const Country = ({country}) => {
     )
 }
 
-const Countries = ({names}) => {
+const Name = ({name, show}) => {
+    return (
+        <div >
+            {name} <button onClick={() => show(name)}>show</button>
+        </div>
+    )
+}
+const Countries = ({names, show}) => {
     return (
         <div>
-            {names.map(name => <p>{name}</p>)}
+            {names.map(name => <Name name={name} show={show}/>)}
         </div>
     )
 }
