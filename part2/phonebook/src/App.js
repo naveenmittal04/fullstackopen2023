@@ -37,11 +37,26 @@ const App = () => {
         setNewNumber(event.target.value)
     }
 
+    const update = (person, newNumber) => {
+        const inputPerson = {
+            ...person,
+            number: newNumber
+        }
+        personService
+            .update(person.id, inputPerson)
+            .then(response => {
+                setPersons(persons.map(n => (n.id !== person.id) ? n:inputPerson))
+                setFilterPersons(filterPersons.map(n => (n.id !== person.id) ? n:inputPerson))
+            })
+    }
+
     const handleFormOnSubmit = (event) => {
         event.preventDefault()
         for(let i = 0; i < persons.length; i++) {
             if(persons[i].name === newName) {
-                alert(`${newName} is already added to phonebook`)
+                if(window.confirm(`${newName} is already added to phonebook, replace old phone number ?`)){
+                    update(persons[i], newNumber)
+                }
                 return
             }
         }
