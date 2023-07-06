@@ -35,19 +35,27 @@ const App = () => {
             }
         }
         const inputPerson = {
-            id: (persons[persons.length-1].id + 1),
+            //id: (persons[persons.length-1].id + 1),
             name: newName,
             number: newNumber
         }
-        const copy = persons.concat(inputPerson)
-        setPersons(copy)
-        setNewName('')
-        setNewNumber('')
 
-        if(newName.toLowerCase().includes(filterName.toLowerCase())) {
-            const copy = filterPersons.concat(inputPerson)
-            setFilterPersons(copy)
-        }
+        axios
+            .post('http://localhost:3001/persons', inputPerson)
+            .then(response => {
+                console.log('new note added to server')
+                const copy = persons.concat(response.data)
+                setPersons(copy)
+                setNewName('')
+                setNewNumber('')
+
+                if(newName.toLowerCase().includes(filterName.toLowerCase())) {
+                    const copy = filterPersons.concat(response.data)
+                    setFilterPersons(copy)
+                }
+            })
+
+
     };
     const handleFilterNameOnChange = (event) => {
         console.log(event.target)
