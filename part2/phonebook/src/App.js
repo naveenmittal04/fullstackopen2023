@@ -49,6 +49,10 @@ const App = () => {
                 setPersons(responsePersons)
                 setFilterPersons(responsePersons)
             })
+            .catch(error => {
+                console.log(error)
+                setNotifocation('Failed to load Data from DB', true)
+            })
     }, [])
     const handleNewNameOnChange = (event) => {
         console.log(event.target)
@@ -69,9 +73,13 @@ const App = () => {
             .then(() => {
                 setPersons(persons.map(n => (n.id !== person.id) ? n:inputPerson))
                 setFilterPersons(filterPersons.map(n => (n.id !== person.id) ? n:inputPerson))
-                setNotifocation(`${person.name} Updated.`)
+                setNotifocation(`${person.name} Updated.`, false)
                 setNewName('')
                 setNewNumber('')
+            })
+            .catch(error => {
+                console.log(error)
+                setNotifocation('Failed to Update in DB', true)
             })
     }
 
@@ -94,7 +102,7 @@ const App = () => {
         personService
             .create(inputPerson)
             .then(responsePerson => {
-                console.log('new note added to server')
+                console.log('new person added to server')
                 setNotifocation(`${responsePerson.name} Added.`)
                 const copy = persons.concat(responsePerson)
                 setPersons(copy)
@@ -105,6 +113,10 @@ const App = () => {
                     const copy = filterPersons.concat(responsePerson)
                     setFilterPersons(copy)
                 }
+            })
+            .catch(error => {
+                console.log(error)
+                setNotifocation('failed to add new person to Database', true)
             })
 
 
